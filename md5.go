@@ -1,7 +1,6 @@
 package main
 
 import (
-	"time"
 	"crypto/hmac"
 	"crypto/md5"
 	"crypto/sha256"
