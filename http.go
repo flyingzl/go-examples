@@ -15,7 +15,7 @@ type IPInfo struct {
 	Org     string `json:"org"`
 }
 
-func (v IpInfo) String() string {
+func (v IPInfo) String() string {
 	return fmt.Sprintf("<IPInfo>(IP=%s, Region=%s, Country=%s, Org=%s)\n", v.IP, v.Region, v.Country, v.Org)
 }
 

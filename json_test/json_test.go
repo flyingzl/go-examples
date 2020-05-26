@@ -1,9 +1,10 @@
-package main
+package json_test
 
 import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"testing"
 	"time"
 )
 
@@ -12,7 +13,7 @@ type User struct {
 	Age  int    `json:"age"`
 }
 
-func main() {
+func TestJson(t *testing.T) {
 	d := map[string]int{"x": 2, "y": 22}
 	z, _ := json.Marshal(d)
 	fmt.Println(z)
