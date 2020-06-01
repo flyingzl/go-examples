@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"sync"
+	"time"
 )
 
 func getTitle(url string) string {
@@ -26,7 +28,7 @@ func getTitle(url string) string {
 
 }
 
-func worker(jobs <-chan string, results chan<- string, done chan<- bool) {
+func worker(jobs <-chan string, results chan<- string, wg *sync.WaitGroup) {
 
 	for {
 		if url, more := <-jobs; more {
@@ -34,7 +36,7 @@ func worker(jobs <-chan string, results chan<- string, done chan<- bool) {
 			results <- fmt.Sprintf("%s[%s]", title, url)
 
 		} else {
-			done <- true
+			wg.Done()
 			return
 		}
 	}
@@ -49,21 +51,26 @@ func main() {
 	// done := make(chan bool)
 	urls := []string{"https://dict.youdao.com", "http://www.youku.com", "http://www.sina.com.cn", "https://www.zhihu.com"}
 
-	requestDone := make(chan bool, threadsNum)
+	wg := new(sync.WaitGroup)
+	wg1 := new(sync.WaitGroup)
+	wg.Add(threadsNum)
+	wg1.Add(1)
 
 	results := make(chan string, 10)
 
-	done := make(chan bool)
+	// done := make(chan bool)
 
 	for i := 1; i <= threadsNum; i++ {
-		go worker(jobs, results, requestDone)
+		go worker(jobs, results, wg)
 	}
 
 	go func() {
 		for v := range results {
 			fmt.Println(v)
 		}
-		done <- true
+		time.Sleep(2 * time.Second)
+		fmt.Println("hello")
+		wg1.Done()
 	}()
 
 	for _, url := range urls {
@@ -72,11 +79,10 @@ func main() {
 
 	close(jobs)
 
-	for i := 1; i <= threadsNum; i++ {
-		<-requestDone
-	}
+	wg.Wait()
 
 	close(results)
 
-	<-done
+	wg1.Wait()
+
 }

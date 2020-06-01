@@ -43,4 +43,8 @@ func TestRuneToString(t *testing.T) {
 
 	// string to byte
 	t.Log([]byte(greetings))
+
+	// byte to string
+	z := []byte{229, 164, 180}
+	t.Log(string(z))
 }
