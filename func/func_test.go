@@ -18,6 +18,14 @@ func calCost(fn IntConv) IntConv {
 	}
 }
 
+func plus(num int) func() int {
+	v := num
+	return func() int {
+		v++
+		return v
+	}
+}
+
 func TestSum(t *testing.T) {
 	start := time.Now()
 	result := sum(1, 2)
@@ -37,6 +45,13 @@ func TestVarParams(t *testing.T) {
 
 	newFn := calCost(fn)
 	t.Logf("result is  %d", newFn(2))
+}
+
+func TestClosureFn(t *testing.T) {
+	fn := plus(2)
+	t.Log(fn())
+	t.Log(fn())
+	t.Log(fn())
 }
 
 func BenchmarkSum(b *testing.B) {
