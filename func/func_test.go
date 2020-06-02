@@ -59,3 +59,18 @@ func BenchmarkSum(b *testing.B) {
 		sum(i, 2)
 	}
 }
+
+func TestMultipleParams(t *testing.T) {
+	sum := func(v ...int) int {
+		ret := 0
+		for _, value := range v {
+			ret += value
+		}
+		return ret
+	}
+
+	a := []int{1, 3, 4}
+
+	v := sum(a...)
+	t.Log(v)
+}
