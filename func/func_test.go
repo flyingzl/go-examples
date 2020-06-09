@@ -52,12 +52,43 @@ func TestClosureFn(t *testing.T) {
 	t.Log(fn())
 	t.Log(fn())
 	t.Log(fn())
+	t.Log(concatString("x2", "3"))
 }
 
-func BenchmarkSum(b *testing.B) {
+func BenchmarkConcatString(b *testing.B) {
+	s := []string{"a", "b", "c", "d", "e", "1", "2", "3", "4"}
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		sum(i, 2)
+		concatString(s...)
 	}
+	b.StopTimer()
+}
+
+func BenchmarkConcatStringWithFor(b *testing.B) {
+	s := []string{"a", "b", "c", "d", "e", "1", "2", "3", "4"}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		concatStringWithFor(s...)
+	}
+	b.StopTimer()
+}
+
+func BenchmarkConcatStringWithBuffer(b *testing.B) {
+	s := []string{"a", "b", "c", "d", "e", "1", "2", "3", "4"}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		concatStringWithBuffer(s...)
+	}
+	b.StopTimer()
+}
+
+func BenchmarkConcatStringWithNew(b *testing.B) {
+	s := []string{"a", "b", "c", "d", "e", "1", "2", "3", "4"}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		concatStringWithNew(s...)
+	}
+	b.StopTimer()
 }
 
 func TestMultipleParams(t *testing.T) {
