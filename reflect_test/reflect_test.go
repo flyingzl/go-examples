@@ -14,6 +14,10 @@ func (s *Student) Greet(msg string) {
 	fmt.Printf("%s say: %s\n", s.Name, msg)
 }
 
+func (s Student) String() string {
+	return fmt.Sprintf("invoke String(): Name=%s", s.Name)
+}
+
 func detect(v interface{}) {
 
 	retType := reflect.TypeOf(v)
@@ -48,6 +52,8 @@ func detect(v interface{}) {
 	if fnVal.IsValid() {
 		fnVal.Call(params)
 	}
+	//  不传递任何参数
+	fmt.Println(retValue.MethodByName("String").Call([]reflect.Value{}))
 }
 
 func TestReflect(t *testing.T) {
