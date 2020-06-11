@@ -18,6 +18,32 @@ func (s Student) String() string {
 	return fmt.Sprintf("invoke String(): Name=%s", s.Name)
 }
 
+// 自动填充结构体
+func fillBySetting(v interface{}, params map[string]interface{}) error {
+	retType := reflect.TypeOf(v)
+	if retType.Kind() != reflect.Ptr {
+		return fmt.Errorf("%v should be pointer", v)
+	} else {
+		if retType.Elem().Kind() != reflect.Struct {
+			return fmt.Errorf("%v should be struct", v)
+		}
+	}
+
+	retVal := reflect.ValueOf(v).Elem()
+
+	for key, val := range params {
+		if realKey := retVal.FieldByName(key); !realKey.IsValid() || !realKey.CanSet() {
+			continue
+		} else {
+			if realKey.Kind() == reflect.TypeOf(val).Kind() {
+				realKey.Set(reflect.ValueOf(val))
+			}
+		}
+	}
+	return nil
+
+}
+
 func detect(v interface{}) {
 
 	retType := reflect.TypeOf(v)
@@ -61,4 +87,34 @@ func TestReflect(t *testing.T) {
 	detect(u)
 	fmt.Printf("-------------------\n")
 	detect(&u)
+}
+
+type Dog struct {
+	AnimalID string
+	Name     string
+	Age      int
+}
+
+type Person struct {
+	UserID string
+	Name   string
+	Age    int
+}
+
+func TestReflectWithAmbious(t *testing.T) {
+	dog := Dog{AnimalID: "xxxx"}
+	person := new(Person)
+	params := map[string]interface{}{
+		"AnimalID": "ANIMAL_ID",
+		"Name":     "James",
+		"Age":      20,
+	}
+	if err := fillBySetting(&dog, params); err != nil {
+		t.Error(err)
+	}
+	if err := fillBySetting(person, params); err != nil {
+		t.Error(err)
+	}
+	t.Log(dog)
+	t.Log(person)
 }
