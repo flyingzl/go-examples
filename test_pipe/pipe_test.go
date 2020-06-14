@@ -14,6 +14,6 @@ func TestPipe(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	} else {
-		t.Log(ret)
+		t.Log(ret.(int))
 	}
 }
